@@ -6,10 +6,12 @@
 #include <iostream>
 using namespace std;
 using namespace cv;
-/*
+
+/* COLORS DO NOT GET PROPERLY SET!
 Mat CreateTestImage() {
-    ret = Mat3f(500,500,0.0f)
-    circle(ret,Point(250,250),150)
+    Mat ret = Mat3f(500,500,0.0f);
+    circle(ret,Point(250,250),150,Scalar(50,200,150),-1,LINE_AA);//-1 means fill
+    return ret;
 }
 */
 
@@ -44,6 +46,7 @@ int main()
 
         // -- USE SAVED IMAGE --
 
+        //img=CreateTestImage();
         //img = imread("./images/1.jpg", 1);
         img = imread("./images/2.jpg", 1);
         //img = imread("./images/3.jpg", 1);
@@ -72,13 +75,19 @@ int main()
 
         vector<vector<Point> > contours;
         vector<Vec4i> hierarchy;
-        findContours(img, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
+        //findContours(img, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE, Point(0, 0));
 
         vector<Vec3f> circles;
         cout << circles.size() << " Tennis Balls were found in the image.\n";
 
         int largestApparentRadius = 0;
         Point closest;
+
+        HoughCircles(img, circles, HOUGH_GRADIENT, 1,
+                     img.rows/16,  // change this value to detect circles with different distances to each other
+                     100, 30, 1, img.rows // change the last two parameters
+                // (min_radius & max_radius) to detect larger circles
+        );
 
         for( size_t i = 0; i < circles.size(); i++ )
         {
@@ -95,12 +104,6 @@ int main()
 
             circle( draw, center, radius, Scalar(255,0,255), 3, LINE_AA);
         }
-
-        HoughCircles(img, circles, HOUGH_GRADIENT, 1,
-                     img.rows/16,  // change this value to detect circles with different distances to each other
-                     100, 30, 1, img.rows // change the last two parameters
-                // (min_radius & max_radius) to detect larger circles
-        );
 
         for (size_t i = 0; i < contours.size(); i++) {
 
