@@ -107,7 +107,7 @@ int main()
             float actualArea = contourArea(contours[i]); //contour area
 
             double circleness = actualArea/circleArea; //aproaches 1 as shape becomes more circular
-            if (circleness < 0.9){
+            if (circleness < 0.8){
                 continue;
             }
 
